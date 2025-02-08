@@ -1,1 +1,185 @@
-<p>still working on this</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sploinky</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-color: black; /* Fallback color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 500; /* Slightly bold font */
+        }
+
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #startBtn {
+            font-size: 24px;
+            padding: 15px 30px;
+            border: none;
+            background: #b28eff;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background 0.5s ease, opacity 0.3s;
+        }
+
+        #startBtn:hover {
+            background: #9a6cff;
+            opacity: 0.8;
+        }
+
+        /* Fade-in animated text */
+        .floating {
+            position: absolute;
+            font-size: 20px;
+            color: white;
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+            user-select: none; /* Prevent text selection */
+            visibility: hidden; /* Initially hidden */
+            animation: floatBeat 789ms infinite alternate ease-in-out; /* 76 BPM */
+        }
+
+        #welcomeText { top: 20%; font-size: 30px; }
+        #otherText { top: 30%; }
+        #otherText2 { top: 40%; }
+        #otherText3 { top: 50%; font-size: 25px; color: rgb(222, 181, 255); }
+
+        /* Floating animation to the beat */
+        @keyframes floatBeat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(5px); }
+        }
+
+        /* Volume slider */
+        #volumeControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            color: white;
+        }
+
+        /* Make the "Volume:" text white */
+        #volumeControl label {
+            color: white;
+            font-weight: 500;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100px;
+            height: 5px;
+            background: #b28eff;
+            outline: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Class to enable text selection */
+        .selectable {
+            user-select: text; /* Allow text selection */
+        }
+
+        /* Link styles */
+        #linkText {
+            color: #cccfff; /* Light purple */
+            text-decoration: none; /* Removes underline */
+            font-weight: bold; /* Makes it stand out */
+        }
+
+        #linkText:hover {
+            color: #b1b5db; /* Slightly darker purple on hover */
+            text-decoration: underline; /* Adds underline on hover */
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <button id="startBtn">welcome!</button>
+    </div>
+
+    <div id="welcomeText" class="floating">Hey there!</div>
+    <div id="otherText" class="floating">Want to join the sploinky group?</div>
+    <div id="otherText2" class="floating">Well come on and join our Discord server!</div>
+    <div id="otherText3" class="floating"><a href="https://discord.gg/esztMnrgbD" id="linkText">Join</a></div>
+
+    <div id="volumeControl">
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.2">
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        document.getElementById("startBtn").addEventListener("click", function() {
+            let overlay = document.getElementById("overlay");
+            overlay.style.transition = "opacity 0.5s";
+            overlay.style.opacity = "0";
+    
+            setTimeout(() => {
+                overlay.style.display = "none";
+                document.getElementById("volumeControl").style.display = "block";
+    
+                let texts = document.querySelectorAll(".floating");
+                texts.forEach((text, index) => {
+                    setTimeout(() => {
+                        text.style.visibility = "visible";
+                        text.style.opacity = 1;
+                        text.style.transform = "translateY(0)";
+                    }, index * 1000); // Each text appears every 1 second
+                });
+
+                // Enable text selection for the link after transition
+                document.getElementById("linkText").classList.add("selectable");
+
+            }, 500);
+    
+            // Set default volume to 0.2 before playing
+            let bgMusic = document.getElementById("bgMusic");
+            bgMusic.volume = 0.2;
+            document.getElementById("volume").value = 0.2; // Sync slider with volume
+            bgMusic.play();
+        });
+
+        // Volume control script
+        document.getElementById("volume").addEventListener("input", function() {
+            document.getElementById("bgMusic").volume = this.value;
+        });
+    </script>
+</body>
+</html>
